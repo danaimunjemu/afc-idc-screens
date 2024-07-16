@@ -1,0 +1,281 @@
+<div>
+  <nz-page-header
+    class="site-page-header"
+    (nzBack)="onBack()"
+    nzBackIcon
+    nzTitle="New ZIMRA Transfer Payment"
+    nzSubtitle="Process ZIMRA Payments (Transfers only)"
+  ></nz-page-header>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="mt-5">
+  <nz-steps [nzCurrent]="current">
+    <nz-step nzTitle="Transaction Details"></nz-step>
+    <nz-step nzTitle="Confirm Data"></nz-step>
+    <nz-step nzTitle="Submit"></nz-step>
+  </nz-steps>
+
+  <div class="steps-content mt-3">
+    <div *ngIf="current == 0">
+      <div class="">
+        <div class="screen-container">
+          <nz-spin nzTip="Fetching Details..." [nzSpinning]="fetchDetailsLoader">
+
+
+            <!--        <div>-->
+            <!--          <nz-page-header-->
+            <!--            class="site-page-header"-->
+            <!--            nzTitle="Payment Type"-->
+            <!--            nzSubtitle="Select the mode of payment"-->
+            <!--          ></nz-page-header>-->
+
+            <!--          <div class="mt-3">-->
+            <!--            <nz-radio-group nzButtonStyle="solid" [(ngModel)]="zimraPaymentRequest.paymentType">-->
+            <!--              <label nz-radio-button nzValue="CASH">Cash</label>-->
+            <!--              <label nz-radio-button nzValue="TRANSFER">Transfer</label>-->
+            <!--            </nz-radio-group>-->
+            <!--          </div>-->
+            <!--        </div>-->
+
+
+            <div>
+
+              <div class="mt-3">
+                <nz-alert nzType="info" nzMessage="Only Transfers are processed on this screen. No cash transactions" nzShowIcon></nz-alert>
+              </div>
+              <div class="mt-3" >
+                <nz-page-header
+                  class="site-page-header"
+                  nzTitle="Transaction Details"
+                  nzSubtitle="Input the transaction Details"
+                ></nz-page-header>
+                <div class="mt-3">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <nz-form-item>
+                        <nz-select nzPlaceHolder="Select the Tax Type" [(ngModel)]="zimraPaymentRequest.taxType">
+                          <nz-option nzValue="DOMESTIC" nzLabel="Domestic Taxes TIN (Income Tax, VAT, QPD, etc)"></nz-option>
+                          <nz-option nzValue="ASSESSMENT" nzLabel="Assessment Number (Duty Payments)"></nz-option>
+                          <nz-option nzValue="PRE_ASSESSMENT" nzLabel="Prepayment TIN (Duty Payments)"></nz-option>
+                        </nz-select>
+                      </nz-form-item>
+                    </div>
+                    <div class="col-md-8">
+                      <nz-form-item>
+                        <input nz-input [placeholder]="(zimraPaymentRequest.taxType != 'ASSESSMENT') ? 'Enter TIN' : 'Enter Assessment Number'" [(ngModel)]="zimraPaymentRequest.tin" />
+                      </nz-form-item>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <nz-form-item *ngIf="zimraPaymentRequest.taxType != 'ASSESSMENT'">
+                        <nz-select nzPlaceHolder="Select Currency" [(ngModel)]="zimraPaymentRequest.sourceAccountCurrency">
+                          <nz-option nzValue="USD" nzLabel="USD"></nz-option>
+                          <nz-option nzValue="ZWL" nzLabel="ZiG"></nz-option>
+                        </nz-select>
+                      </nz-form-item>
+                      <nz-form-item>
+                  <span *ngIf="zimraPaymentRequest.paymentType == 'TRANSFER'" style="width: 100%">
+                    <input [disabled]="zimraPaymentRequest.paymentType.length == 0" nz-input placeholder="Enter Account Number" type="number" [(ngModel)]="zimraPaymentRequest.sourceAccount" />
+                  </span>
+                        <span *ngIf="zimraPaymentRequest.paymentType != 'TRANSFER'" style="width: 100%">
+                    <nz-select [nzDisabled]="zimraPaymentRequest.paymentType.length == 0" nzPlaceHolder="Select Account Number" [(ngModel)]="zimraPaymentRequest.sourceAccount">
+                      <nz-option nzValue="100010370684" nzLabel="100010370684"></nz-option>
+                      <nz-option nzValue="100009764679" nzLabel="100009764679"></nz-option>
+                    </nz-select>
+                  </span>
+                      </nz-form-item>
+                    </div>
+                    <div class="col-md-6">
+                      <nz-form-item>
+                        <nz-input-number-group nzAddOnBefore="$" style="width: 100%">
+                          <nz-input-number nzPlaceHolder="Enter Amount" [(ngModel)]="zimraPaymentRequest.amount"></nz-input-number>
+                        </nz-input-number-group>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                  <nz-form-item>
+                    <textarea rows="2" nz-input placeholder="Enter Reference" [(ngModel)]="zimraPaymentRequest.userReference"></textarea>
+                  </nz-form-item>
+
+                </div>
+              </div>
+
+              <div class="mt-3" >
+                <nz-page-header
+                  class="site-page-header"
+                  nzTitle="Payer Details"
+                  nzSubtitle="Input the information of the customer making the payment"
+                ></nz-page-header>
+                <div class="mt-3">
+                  <nz-form-item>
+                    <input nz-input placeholder="Payer Full Name" [(ngModel)]="zimraPaymentRequest.payerFullName" />
+                  </nz-form-item>
+                  <nz-form-item>
+                    <input nz-input placeholder="Payer Mobile Number" [(ngModel)]="zimraPaymentRequest.payerMobileNumber" />
+                  </nz-form-item>
+                  <nz-form-item>
+                    <input nz-input placeholder="Payer ID Number" [(ngModel)]="zimraPaymentRequest.payerIdNumber" />
+                  </nz-form-item>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center mt-5">
+                <button nz-button nzType="primary" (click)="fetchAuthDetails()" [disabled]="areAllFieldsEmpty()" [nzLoading]="billPaymentLoader">
+                  <span nz-icon nzType="sync"></span>
+                  Fetch Details
+                </button>
+              </div>
+            </div>
+          </nz-spin>
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+    <div *ngIf="current == 1">
+      <div class="">
+        <div class="screen-container">
+          <div class="d-flex justify-content-center">
+            <img src="./assets/images/zimra.png" style="max-width: 100px" alt="">
+          </div>
+          <nz-divider nzText="Confirm Details"></nz-divider>
+            <div *ngIf="authData">
+
+              <nz-list>
+                <nz-list-item *ngFor="let data of authData.ConfirmData">
+                  <span nz-typography><mark>{{data.display}}</mark></span>
+                  {{data.value}}
+                </nz-list-item>
+                <nz-list-item>
+                  <span nz-typography><mark>ZIMRA Account</mark></span>
+                  {{authData.BILL_AUTH_RESPONSE.accountNumber}}
+                </nz-list-item>
+                <nz-list-item>
+                  <span nz-typography><mark>Currency</mark></span>
+                  {{changeZWLtoZiG(authData.BILL_AUTH_RESPONSE.currencyCode)}}
+                </nz-list-item>
+              </nz-list>
+            </div>
+
+            <nz-divider nzText="Account Details"></nz-divider>
+              <div *ngIf="authData">
+
+                <nz-list>
+                  <nz-list-item>
+                    <span nz-typography><mark>Account Name</mark></span>
+                    {{authResponse.enquiry.additionalData.ACCOUNT_ENQUIRY.NAME}}
+                  </nz-list-item>
+                  <nz-list-item>
+                    <span nz-typography><mark>Account Currency</mark></span>
+                    {{changeZWLtoZiG(authResponse.enquiry.additionalData.ACCOUNT_ENQUIRY.CURRENCY)}}
+                  </nz-list-item>
+                  <nz-list-item>
+                    <span nz-typography><mark>Account Number</mark></span>
+                    {{authResponse.enquiry.additionalData.ACCOUNT_ENQUIRY.ACCOUNT}}
+                  </nz-list-item>
+                </nz-list>
+              </div>
+
+            <div *ngIf="!authData">
+              <nz-empty
+                [nzNotFoundContent]="contentTpl"
+              >
+                <ng-template #contentTpl>
+          <span>
+            Fetch details on the form on your left to display this data.
+          </span>
+                </ng-template>
+              </nz-empty>
+            </div>
+            <div class="mt-3 d-flex justify-content-center" *ngIf="authData">
+              <button nz-button nzType="default"
+                      nz-popconfirm
+                      nzPopconfirmTitle="Are you sure? Going back clears the form"
+                      nzPopconfirmPlacement="bottom"
+                      (nzOnConfirm)="confirmToPreOne()"
+                      (nzOnCancel)="cancelPreOne()"
+              >
+                <span nz-icon nzType="left"></span>
+                Previous Step
+              </button>
+              <button [disabled]="zimraPaymentRequest.billAuthResponse == {} || billPaymentLoader" nz-button nzType="primary" (click)="confirmDetails()">
+                <span nz-icon nzType="check"></span>
+                Confirm Details
+              </button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="current == 2">
+      <div class="screen-container">
+        <div class="mt-3 d-flex justify-content-center" *ngIf="authData">
+          <nz-spin nzTip="Fetching Details..." [nzSpinning]="billPaymentLoader">
+            <div class="view-transactions-details-area mt-5">
+              <div class="view-transaction-details">
+                <div class="pop-transaction-details"  >
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">Payment Type: </span> <span style="text-align: right;">{{zimraPaymentRequest.paymentType}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">Tax Type: </span> <span style="text-align: right;">{{zimraPaymentRequest.taxType}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">TIN: </span> <span style="text-align: right;">{{zimraPaymentRequest.tin}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">Sending Account: </span> <span>{{zimraPaymentRequest.sourceAccount}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">ZIMRA Account: </span> <span>{{authData.BILL_AUTH_RESPONSE.accountNumber}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">Amount: </span> <span>{{changeZWLtoZiG(zimraPaymentRequest.sourceAccountCurrency)}}  {{zimraPaymentRequest.amount}}</span>
+                  </div>
+                  <div class="confirm-transaction-element">
+                    <span style="font-weight: bold">Reference: </span> <span>{{zimraPaymentRequest.userReference}}</span>
+                  </div>
+                  <br>
+
+
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <button nz-button nzType="default"
+                      (click)="pre()"
+              >
+                <span nz-icon nzType="left"></span>
+                Previous Step
+              </button>
+              <button [nzLoading]="billPaymentLoader" [disabled]="zimraPaymentRequest.billAuthResponse == {} || billPaymentLoader" nz-button nzType="primary" (click)="billPayment()">
+                <span nz-icon nzType="check"></span>
+                Submit Payment
+              </button>
+
+            </div>
+          </nz-spin>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

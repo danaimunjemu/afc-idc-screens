@@ -1,0 +1,30 @@
+.transactions-list-container {
+  height: calc(100vh - 350px);
+  overflow: scroll;
+}
+
+.table-click-icon {
+  transition-duration: 0.5s;
+}
+
+.table-click-icon:hover {
+  cursor: pointer;
+  color: #93d441;
+}
+
+.click-icon-decline {
+  color: red;
+}
+
+.click-icon-decline:hover {
+  color: darkred;
+}
+
+.click-icon-authorise {
+  color: #0d9f0d;
+}
+
+.click-icon-authorise:hover {
+  color: darkgreen;
+}
+

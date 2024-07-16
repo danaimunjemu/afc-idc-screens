@@ -1,0 +1,105 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Special+Elite&display=swap');
+
+* {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+}
+
+body {
+  background: #f4f5f8 !important;
+}
+
+.app-nav {
+  background-color: #393a3d;
+  color: #e9e9eb;
+}
+
+.navbar-brand {
+  color: #e9e9eb;
+}
+
+.ant-layout {
+  background: #f4f5f8;
+}
+
+.ant-layout-sider, .ant-menu {
+  background: transparent;
+}
+
+.ant-menu-sub.ant-menu-inline {
+  background: transparent !important;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: transparent;
+}
+
+.screen-container {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.ant-page-header {
+  padding: 0px;
+}
+
+.ant-notification-notice {
+  transform: translateY(50px);
+}
+
+.ant-spin-nested-loading > div > .ant-spin {
+  max-height: none;
+}
+
+.ant-modal-header, .ant-modal-footer, .ant-tag {
+  border: none;
+}
+
+.ant-menu-item-selected {
+  color: #393a3d;
+  font-weight: 800;
+}
+
+.ant-menu-item {
+  transition-duration: 0.5s;
+}
+
+.ant-menu-light .ant-menu-item:hover, .ant-menu-light .ant-menu-item-active, .ant-menu-light .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-light .ant-menu-submenu-active, .ant-menu-light .ant-menu-submenu-title:hover {
+  color: #222525;
+  font-weight: 600;
+}
+
+.ant-select {
+  width: 100%;
+}
+
+.navbar-toggler {
+  border: none !important;
+  color: #efefef !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+.ant-menu-submenu-selected {
+  font-weight: 900;
+}
+
+.stamp-header {
+  color: rgb(19,102,50);
+  font-size: 12px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-family: "Special Elite", system-ui;
+}
+
+.stamp-text {
+  font-size: 9px;
+  margin-bottom: 0;
+  font-family: "Special Elite", system-ui;
+}

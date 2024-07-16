@@ -1,0 +1,208 @@
+<div class="d-flex justify-content-end" *ngIf="user.role == 'TELLER'">
+  <button nz-button nzType="primary" (click)="newZimraPayment()">
+    <span nz-icon nzType="plus"></span>
+    New ZIMRA Payment
+  </button>
+</div>
+
+
+  <nz-tabset>
+    <nz-tab nzTitle="All Transactions" (nzClick)="filterTransactions('ALL')"></nz-tab>
+    <nz-tab nzTitle="Pending Branch Manager's Approval" (nzClick)="filterTransactions('PENDING_AWAITING_AUTHORISATION')"></nz-tab>
+    <nz-tab nzTitle="Pending Teller Processing" (nzClick)="filterTransactions('PENDING_WAITING_PROCESSING')"></nz-tab>
+    <nz-tab nzTitle="Completed" (nzClick)="filterTransactions('COMPLETED')"></nz-tab>
+  </nz-tabset>
+
+<div class="screen-container mt-3">
+  <nz-page-header
+    class="site-page-header"
+    nzTitle="ZIMRA"
+    nzSubtitle="Transactions List"
+  ></nz-page-header>
+  <nz-spin nzTip="Loading Transactions..." [nzSpinning]="getTransactionsLoader || actionTransactionLoader">
+    <div class="transactions-list-container">
+      <div *ngIf="!transactions" class="mt-3">
+
+      </div>
+
+      <div *ngIf="transactions && transactions.length == 0" class="mt-3">
+        <nz-empty
+          [nzNotFoundContent]="contentTpl"
+        >
+          <ng-template #contentTpl>
+              <span>
+                There are no transactions to display
+              </span>
+          </ng-template>
+        </nz-empty>
+      </div>
+
+      <div *ngIf="transactions && transactions.length > 0" class="mt-3">
+
+        <nz-table
+          #nzTable
+          #rowSelectionTable
+          [nzData]="transactions"
+        >
+          <thead>
+          <tr>
+            <th nzWidth="60px"></th>
+            <th>Created At</th>
+            <th>Inputter</th>
+            <th>TIN</th>
+            <th>Amount</th>
+            <th>Tax Type</th>
+            <th>Payment Type</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let data of rowSelectionTable.data">
+          <tr>
+            <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+            <td>{{ formatDate(data.createdAt) }}</td>
+            <td>{{ data.inputter.email }}</td>
+            <td>{{ data.tin }}</td>
+            <td>{{ changeZWLtoZiG(data.currencyCode) }}  {{ data.amount }}</td>
+            <td>{{ data.taxType }}</td>
+            <td>{{ data.paymentType }}</td>
+            <td>
+              <nz-tag [nzColor]=(transactionStatus[data.status]) class="ticket-status-tag">{{replaceUnderscoreWithSpace(data.status)}}</nz-tag>
+            </td>
+            <td>
+
+<!--                    <span>-->
+<!--                      <span (click)="viewTransaction(data.id)" class="table-click-icon" nzTooltipTitle="View" nzTooltipPlacement="bottomRight" nz-tooltip>-->
+<!--                        <span nz-icon nzType="eye" nzTheme="outline"></span>-->
+<!--                      </span>-->
+<!--                    </span>-->
+
+              <span *ngIf="user.role == 'MANAGER' && data.status == 'PENDING_AWAITING_AUTHORISATION'">
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span class="table-click-icon click-icon-authorise" nzTooltipTitle="Authorise" nzTooltipPlacement="bottomRight" nz-tooltip
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure you want to authorise this transaction?"
+                            (nzOnConfirm)="actionTransaction(data.id, 'PENDING_WAITING_PROCESSING')"
+                            (nzOnCancel)="cancel()"
+                            nzPopconfirmPlacement="topLeft"
+                      >
+                        <span nz-icon nzType="check" nzTheme="outline"></span>
+                      </span>
+                    </span>
+
+              <span *ngIf="user.role == 'MANAGER' && data.status == 'PENDING_AWAITING_AUTHORISATION'">
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span class="table-click-icon click-icon-decline" nzTooltipTitle="Decline" nzTooltipPlacement="bottomRight" nz-tooltip
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure you want to decline this transaction?"
+                            (nzOnConfirm)="actionTransaction(data.id, 'DECLINED')"
+                            (nzOnCancel)="cancel()"
+                            nzPopconfirmPlacement="topLeft"
+                      >
+                        <span nz-icon nzType="close" nzTheme="outline"></span>
+                      </span>
+                    </span>
+
+
+              <span *ngIf="user.role == 'TELLER' && data.status == 'PENDING_AWAITING_AUTHORISATION'">
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span class="table-click-icon click-icon-decline" nzTooltipTitle="Cancel" nzTooltipPlacement="bottomRight" nz-tooltip
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure you want to cancel this transaction?"
+                            (nzOnConfirm)="actionTransaction(data.id, 'CANCELLED')"
+                            (nzOnCancel)="cancel()"
+                            nzPopconfirmPlacement="topLeft"
+                      >
+                        <span nz-icon nzType="stop" nzTheme="outline"></span>
+                      </span>
+                    </span>
+
+              <span *ngIf="user.role == 'TELLER' && data.status == 'PENDING_WAITING_PROCESSING'">
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span class="table-click-icon click-icon-authorise" nzTooltipTitle="Process" nzTooltipPlacement="bottomRight" nz-tooltip
+                            nz-popconfirm
+                            nzPopconfirmTitle="Are you sure you want to process this transaction?"
+                            (nzOnConfirm)="processTransaction(data.id)"
+                            (nzOnCancel)="cancel()"
+                            nzPopconfirmPlacement="topLeft"
+                      >
+                        <span nz-icon nzType="sync" nzTheme="outline"></span>
+                      </span>
+                    </span>
+
+              <span *ngIf="user.role == 'TELLER' && data.status == 'COMPLETED'">
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span class="table-click-icon click-icon-decline" nzTooltipTitle="Print POP" nzTooltipPlacement="bottomRight" nz-tooltip
+                            (click)="printPOP(data.id)"
+                      >
+                        <span nz-icon nzType="file-pdf" nzTheme="outline"></span>
+                      </span>
+                    </span>
+
+
+            </td>
+          </tr>
+          <tr [nzExpand]="expandSet.has(data.id)">
+            <span>  <b>Inputter: </b>{{ data.inputter.email }} - {{data.inputter.role}} - {{data.inputter.branchName}}</span>
+          </tr>
+          <ng-template>
+            <span
+              nz-icon
+              *ngIf="!expandSet.has(data.id)"
+              nzType="plus-circle"
+              nzTheme="outline"
+              (click)="onExpandChange(data.id, true)"
+            ></span>
+            <span
+              nz-icon
+              *ngIf="expandSet.has(data.id)"
+              nzType="minus-circle"
+              nzTheme="outline"
+              (click)="onExpandChange(data.id, false)"
+            ></span>
+          </ng-template>
+          </ng-container>
+          </tbody>
+        </nz-table>
+
+<!--        <div class="d-flex justify-content-end align-items-baseline">-->
+<!--          <nz-pagination [nzPageIndex]="1" [nzTotal]="pagination.totalElements" [nzPageSize]="pagination.size" (nzPageIndexChange)="pageChange($event)" [nzItemRender]="renderItemTemplate"></nz-pagination>-->
+<!--          <ng-template #renderItemTemplate let-type let-page="page">-->
+<!--            <ng-container [ngSwitch]="type">-->
+<!--              <a *ngSwitchCase="'page'">{{ page }}</a>-->
+<!--              <a class="pagination-a" *ngSwitchCase="'prev'" (click)="changePage('previous')">Previous</a>-->
+<!--              <a class="pagination-a" *ngSwitchCase="'next'" (click)="changePage('next')">Next</a>-->
+<!--            </ng-container>-->
+<!--          </ng-template>-->
+<!--        </div>-->
+
+      </div>
+    </div>
+  </nz-spin>
+
+</div>
+
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>Custom Modal Title</ng-template>
+
+  <ng-template #modalContent>
+    <div *ngIf="transaction">
+      {{transaction.id}}
+      <button nz-button nzType="primary" (click)="processTransaction(transaction.id)">
+        <span nz-icon nzType="search"></span>
+        Process Transaction
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooter>
+  </ng-template>
+</nz-modal>

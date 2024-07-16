@@ -1,0 +1,52 @@
+
+.view-transaction-area {
+  padding: 10px 30px;
+}
+
+.view-transaction-header {
+  padding: 10px 50px;
+}
+
+.view-transaction-id-header {
+  font-size: 14px;
+}
+
+.view-transaction-id-hash {
+  color: #adadad;
+}
+
+.view-transaction-type {
+  color: #adadad;
+}
+
+.view-transaction-details {
+  border-radius: 10px;
+  border: 1px solid #dedede;
+  padding: 20px;
+  font-size: 14px;
+}
+
+.view-transactions-details-area {
+  //padding: 30px;
+}
+
+.confirm-transaction-element {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 2px;
+  margin: 0 10px;
+  border-bottom: 1px solid #dedede;
+}
+
+/*Stamp CSS*/
+
+.image-box {
+  height: 150px;
+  width: 210px !important;
+  background-image: url("/assets/images/retro-stamp.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: rotate(0.005turn);
+}
+
+
