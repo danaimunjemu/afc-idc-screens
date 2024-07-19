@@ -39,6 +39,7 @@
         <ul>
           <li nz-menu-item routerLinkActive="ant-menu-item-selected" routerLink="/screens/main/zimra-tin-verification">TIN Verification</li>
           <li nz-menu-item routerLinkActive="ant-menu-item-selected" routerLink="/screens/main/zimra-screen">ZIMRA Payments</li>
+          <li *ngIf="user.role=='ADMIN'" nz-menu-item routerLinkActive="ant-menu-item-selected" routerLink="/screens/main/zimra-users">Portal Users</li>
         </ul>
       </li>
     </ul>

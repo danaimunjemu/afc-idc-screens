@@ -21,6 +21,11 @@ export class TransactionService {
   $actionTransaction  = new Subject();
   $processTransaction  = new Subject();
 
+  // admin
+  $users = new Subject();
+  $newUser = new Subject();
+  $updateUser = new Subject();
+
   fetchAuthDetails(request: any) {
     this.http.post(environment.screens_server + 'zimra-data/fetch-auth',  request).subscribe((response: any) => {
       this.$fetchAuthDetails.next(response);
@@ -61,4 +66,22 @@ export class TransactionService {
     });
   }
 
+//   admin operations
+  getUsers() {
+    this.http.get(environment.screens_server + 'admin').subscribe((response: any) => {
+      this.$users.next(response);
+    });
+  }
+
+  createNewUser(request: any) {
+    this.http.post(environment.screens_server + 'admin',  request).subscribe((response: any) => {
+      this.$newUser.next(response);
+    });
+  }
+
+  updateUser(request: any) {
+    this.http.put(environment.screens_server + 'admin',  request).subscribe((response: any) => {
+      this.$updateUser.next(response);
+    });
+  }
 }
