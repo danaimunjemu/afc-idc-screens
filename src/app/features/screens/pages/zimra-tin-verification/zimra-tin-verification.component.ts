@@ -29,6 +29,7 @@ export class ZimraTinVerificationComponent implements OnInit{
     userReference: "",
     taxType: "",
     amount: "",
+    tinVerification: true,
     billAuthResponse: {}
   }
 

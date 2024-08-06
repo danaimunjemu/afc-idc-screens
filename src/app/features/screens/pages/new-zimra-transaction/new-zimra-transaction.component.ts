@@ -37,6 +37,7 @@ export class NewZimraTransactionComponent implements OnInit, OnDestroy {
     userReference: "",
     taxType: "",
     amount: "",
+    tinVerification: false,
     billAuthResponse: {}
   }
 
@@ -187,6 +188,7 @@ export class NewZimraTransactionComponent implements OnInit, OnDestroy {
       userReference: "",
       taxType: "",
       amount: "",
+      tinVerification: false,
       billAuthResponse: {}
     }
   }
