@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-end">
+  <button nz-button nzType="primary" (click)="gotoCreateUserPage()">
+    <span nz-icon nzType="plus"></span>
+    New User
+  </button>
+</div>
+
+
+<div class="screen-container mt-3">
+  <nz-page-header
+    class="site-page-header"
+    nzTitle="ZIMRA"
+    nzSubtitle="Users List"
+  ></nz-page-header>
+  <nz-spin nzTip="Loading Users..." [nzSpinning]="getUsersLoader">
+    <div class="transactions-list-container">
+      <div *ngIf="!users" class="mt-3">
+      </div>
+
+      <div *ngIf="users && users.length == 0" class="mt-3">
+        <nz-empty
+          [nzNotFoundContent]="contentTpl"
+        >
+          <ng-template #contentTpl>
+              <span>
+                There are no users to display
+              </span>
+          </ng-template>
+        </nz-empty>
+      </div>
+
+      <div *ngIf="users && users.length > 0" class="mt-3">
+
+        <nz-table
+          #nzTable
+          #rowSelectionTable
+          [nzData]="users"
+        >
+          <thead>
+          <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Branch</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let data of rowSelectionTable.data">
+            <tr>
+              <td>{{ data.email }}</td>
+              <td>{{ data.role }}</td>
+              <td>{{ data.branchName }}</td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </nz-table>
+
+      </div>
+    </div>
+  </nz-spin>
+
+</div>
