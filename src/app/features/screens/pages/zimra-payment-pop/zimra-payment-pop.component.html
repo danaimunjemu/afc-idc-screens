@@ -71,7 +71,7 @@
                   <span style="font-weight: bold">Sending Account: </span> <span>{{transaction.sourceAccount}}</span>
                 </div>
                 <div class="confirm-transaction-element">
-                  <span style="font-weight: bold">Amount: </span> <span>{{zigConverter(transaction.currencyCode)}}  {{transaction.amount}}</span>
+                  <span style="font-weight: bold">Amount: </span> <span>{{currencyConverter(transaction.currencyCode)}}  {{transaction.amount}}</span>
                 </div>
                 <div class="confirm-transaction-element">
                   <span style="font-weight: bold">FT Reference: </span> <span>{{transaction.response.debitReference}}</span>

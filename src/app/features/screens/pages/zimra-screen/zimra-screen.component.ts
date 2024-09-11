@@ -214,9 +214,9 @@ export class ZimraScreenComponent implements OnInit, OnDestroy{
 
   }
 
-  changeZWLtoZiG(currencyCode: string) : string {
-    if (currencyCode == 'ZWL') {
-      return 'ZiG'
+  currencyConverter(currencyCode: string) : string {
+    if (currencyCode == 'ZWL' || currencyCode == 'ZiG' ) {
+      return 'ZWG'
     } else {
       return currencyCode;
     }

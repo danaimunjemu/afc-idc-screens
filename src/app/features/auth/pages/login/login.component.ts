@@ -37,7 +37,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subs.add = this.authService.$login.subscribe((response: any) => {
-      console.log(response)
+      console.log(response);
+      this.loginLoader = false;
+
       if (response.success) {
         this.notification.create(
           'success',
@@ -55,7 +57,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           response.detail
         );
       }
-      this.loginLoader = false;
     })
   }
 

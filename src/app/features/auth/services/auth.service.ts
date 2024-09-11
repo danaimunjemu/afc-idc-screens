@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import { environment } from "../../../../environment/environment";
+import {environment} from "../../../../environment/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) { }
+  ) {
+  }
 
   $login = new Subject();
   token!: string;
@@ -20,7 +21,7 @@ export class AuthService {
 
   authenticate(request: any) {
     this.http.post(environment.screens_server + 'auth/authenticate', request).subscribe((response: any) => {
-      if(response.success) {
+      if (response.success) {
         this.setToken(response.data.token);
         this.setUser(response.data.user)
       }

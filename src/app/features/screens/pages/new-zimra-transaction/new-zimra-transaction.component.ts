@@ -46,9 +46,9 @@ export class NewZimraTransactionComponent implements OnInit, OnDestroy {
     return !tellerId && !tin && !payerFullName && !payerIdNumber && !paymentType && !sourceAccount && !sourceAccountCurrency && !payerMobileNumber && !userReference && !taxType && !amount;
   }
 
-  changeZWLtoZiG(currencyCode: string) : string {
-    if (currencyCode == 'ZWL') {
-      return 'ZiG'
+  currencyConverter(currencyCode: string) : string {
+    if (currencyCode == 'ZWL' || currencyCode == 'ZiG' ) {
+      return 'ZWG'
     } else {
       return currencyCode;
     }

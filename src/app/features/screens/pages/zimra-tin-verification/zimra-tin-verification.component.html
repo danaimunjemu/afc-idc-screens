@@ -20,7 +20,7 @@
           <nz-form-item *ngIf="tinVerificationRequest.taxType != 'ASSESSMENT'">
             <nz-select nzPlaceHolder="Select Currency" [(ngModel)]="tinVerificationRequest.sourceAccountCurrency">
               <nz-option nzValue="USD" nzLabel="USD"></nz-option>
-              <nz-option nzValue="ZWL" nzLabel="ZiG"></nz-option>
+              <nz-option nzValue="ZWG" nzLabel="ZWG"></nz-option>
             </nz-select>
           </nz-form-item>
           <nz-form-item>
@@ -48,7 +48,7 @@
                 </nz-list-item>
                 <nz-list-item>
                   <span nz-typography><mark>Currency</mark></span>
-                  {{changeZWLtoZiG(authData.BILL_AUTH_RESPONSE.currencyCode)}}
+                  {{currencyConverter(authData.BILL_AUTH_RESPONSE.currencyCode)}}
                 </nz-list-item>
               </nz-list>
             </div>
@@ -60,4 +60,3 @@
     </div>
   </div>
 </div>
-

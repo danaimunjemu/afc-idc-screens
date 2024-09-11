@@ -42,9 +42,9 @@ export class ZimraTinVerificationComponent implements OnInit{
     this.transactionService.fetchAuthDetails(this.tinVerificationRequest);
   }
 
-  changeZWLtoZiG(currencyCode: string) : string {
-    if (currencyCode == 'ZWL') {
-      return 'ZiG'
+  currencyConverter(currencyCode: string) : string {
+    if (currencyCode == 'ZWL' || currencyCode == 'ZiG') {
+      return 'ZWG'
     } else {
       return currencyCode;
     }

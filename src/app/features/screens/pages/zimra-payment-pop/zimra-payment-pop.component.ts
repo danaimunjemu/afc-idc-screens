@@ -105,9 +105,9 @@ export class ZimraPaymentPopComponent implements OnInit, OnDestroy{
     })
   }
 
-  zigConverter(currency: any) {
-    if (currency == 'ZWL'){
-      return 'ZiG'
+  currencyConverter(currency: any) {
+    if (currency == 'ZWL' || currency == 'ZiG'){
+      return 'ZWG'
     } else {
       return currency
     }
